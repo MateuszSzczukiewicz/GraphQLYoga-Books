@@ -3,12 +3,14 @@
     "noImplicitAny": true,
     "preserveConstEnums": true,
     "sourceMap": true,
-    "target": "ES6",
+    "target": "ES2023",
     "downlevelIteration": true,
     "lib": ["dom", "es6", "dom.iterable"],
     "outDir": "dist",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "moduleResolution": "node"
-  }
+  },
+  "include": ["src/**/*.ts", "db.ts", "index.ts"],
+  "exclude": ["node_modules"]
 }
