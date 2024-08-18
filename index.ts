@@ -1,10 +1,20 @@
 import { createServer } from "node:http";
 import { createSchema, createYoga } from "graphql-yoga";
 import db from "./db";
-import { Book, RootBookResolvers } from "./src/resolvers/BookResolvers";
+import {
+  Book,
+  RootBookResolvers,
+  RootMutationBookResolver,
+} from "./src/resolvers/BookResolvers";
 import gql from "graphql-tag";
-import { RootAuthorResolver } from "./src/resolvers/AutorResolvers";
-import { RootCommentResolvers } from "./src/resolvers/CommentResolvers";
+import {
+  RootAuthorResolver,
+  RootMutationAuthorResolver,
+} from "./src/resolvers/AuthorResolvers";
+import {
+  RootCommentResolvers,
+  RootMutationCommentResolver,
+} from "./src/resolvers/CommentResolvers";
 
 const typeDefs = gql`
   type Query {
@@ -12,6 +22,38 @@ const typeDefs = gql`
     getAuthor(id: ID!): Author
     getBook(id: ID!): Book
     getComments: [Comment!]!
+  }
+
+  type Mutation {
+    addAuthor(author: AuthorInput!): Author
+    addBook(bookInput: BookInput!): Book
+    addComment(commentInput: CommentInput): Comment
+    updateComment(id: ID!, commentInput: CommentInput): Comment
+  }
+
+  input CommentInput {
+    bookId: ID
+    content: String!
+    approved: Boolean = false
+  }
+
+  input BookInput {
+    title: String!
+    authors: AuthorConnectionInput!
+  }
+
+  input AuthorConnectionInput {
+    create: AuthorInput!
+    connect: AuthorConnectInput!
+  }
+
+  input AuthorConnectInput {
+    ids: [String!]!
+  }
+
+  input AuthorInput {
+    firstName: String!
+    lastName: String!
   }
 
   type Book {
@@ -40,6 +82,11 @@ const resolvers = {
     ...RootBookResolvers,
     ...RootAuthorResolver,
     ...RootCommentResolvers,
+  },
+  Mutation: {
+    ...RootMutationAuthorResolver,
+    ...RootMutationBookResolver,
+    ...RootMutationCommentResolver,
   },
   Book,
 };
